@@ -11,6 +11,7 @@ typedef bit<48> mac_addr_t;
 typedef bit<32> ipv4_addr_t;
 const bit<16> ETHERTYPE_TPID = 0x8100;
 const bit<16> ETHERTYPE_IPV4 = 0x0800;
+const bit<16> ETHERTYPE_REQUEST = 0x1234;
 typedef bit<12> vlan_id_t;
 const bit<9> DISAGG_RECIRC = 68; //默认的回环端口, 要问下我们的交换机是多少
 
@@ -133,7 +134,7 @@ parser IngressParser(packet_in      pkt,
     state parse_ethernet {
         pkt.extract(hdr.ethernet);
         transition select(hdr.ethernet.ether_type){
-            ETHERTYPE_IPV4 : parse_request;
+            ETHERTYPE_REQUEST : parse_request;
             default        : accept; 
         }
     }
@@ -380,6 +381,9 @@ control Ingress(
         ig_tm_md.ucast_egress_port = DISAGG_RECIRC;
     }
     apply{
+        if(hdr.request.requestType == REQUEST_TYPE_SECOND_READ || hdr.request.requestType == REQUEST_TYPE_SECOND_WRITE){
+            set_cache_state();
+        }
         if(hdr.request.requestType == REQUEST_TYPE_FIRST_READ || hdr.request.requestType == REQUEST_TYPE_FIRST_WRITE){
             get_current_cache_state();
             if(hdr.request.node_id == NODE_ID0){
@@ -418,10 +422,7 @@ control Ingress(
                     cacheStateTranslate2.apply();
                 }
             }
-
-        }
-        if(hdr.request.requestType == REQUEST_TYPE_SECOND_READ || hdr.request.requestType == REQUEST_TYPE_SECOND_WRITE){
-            set_cache_state();
+            cache_recirc();
         }
     }
 }    
