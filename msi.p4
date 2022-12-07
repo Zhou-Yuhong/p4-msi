@@ -12,6 +12,8 @@ typedef bit<32> ipv4_addr_t;
 const bit<16> ETHERTYPE_TPID = 0x8100;
 const bit<16> ETHERTYPE_IPV4 = 0x0800;
 typedef bit<12> vlan_id_t;
+const bit<9> DISAGG_RECIRC = 68; //默认的回环端口, 要问下我们的交换机是多少
+
 //request类型
 const bit<4> REQUEST_TYPE_FIRST_READ = 0x0;
 const bit<4> REQUEST_TYPE_FIRST_WRITE = 0x1;
@@ -21,9 +23,10 @@ const bit<4> REMOTE_READ_MISS = 0x4;
 const bit<4> REMOTE_WRITE_MISS = 0x5;
 //state类型
 const bit<4> STATE_MODIFY = 0x1;
-const bit<4> STATE_SHARED = 0x2;
+//开始时都是SHARED的state
+const bit<4> STATE_SHARED = 0x0;
 const bit<4> STATE_INVALID = 0x3;
-const bit<4> STATE_SAME = 0x0; //不需要改动state
+const bit<4> STATE_SAME = 0x2; //不需要改动state
 //miss类型
 const bit<4> MISS_TYPE_NOT_MISS = 0x0;
 const bit<4> MISS_TYPE_READ_MISS = 0x1;
@@ -78,6 +81,7 @@ header state_entry_h3{
     bit<4> cur_state;
     bit<4> next_state;
 }
+
 header ipv4_h {
     bit<4> version;
     bit<4> ihl;
@@ -101,7 +105,7 @@ struct cached_t{
 }
 struct my_ingress_headers_t{
     ethernet_h ethernet;
-    ipv4_h ipv4;
+    // ipv4_h ipv4;
     request_h request;
     //用于后续操作的
     state_entry_h0 entry0;
@@ -129,14 +133,14 @@ parser IngressParser(packet_in      pkt,
     state parse_ethernet {
         pkt.extract(hdr.ethernet);
         transition select(hdr.ethernet.ether_type){
-            ETHERTYPE_IPV4 : parse_ipv4;
+            ETHERTYPE_IPV4 : parse_request;
             default        : accept; 
         }
     }
-    state parse_ipv4 {
-        pkt.extract(hdr.ipv4);
-        transition parse_request;
-    }
+    // state parse_ipv4 {
+    //     pkt.extract(hdr.ipv4);
+    //     transition parse_request;
+    // }
     state parse_request {
         pkt.extract(hdr.request);
         transition parse_state_entry0;
@@ -201,8 +205,8 @@ control Ingress(
     {
         hdr.entry0.cur_state = cache_state0_get_action.execute(hdr.request.index);
         hdr.entry1.cur_state = cache_state1_get_action.execute(hdr.request.index);
-        hdr.entry2.cur_state = cache_state1_get_action.execute(hdr.request.index);
-        hdr.entry3.cur_state = cache_state1_get_action.execute(hdr.request.index);
+        hdr.entry2.cur_state = cache_state2_get_action.execute(hdr.request.index);
+        hdr.entry3.cur_state = cache_state3_get_action.execute(hdr.request.index);
     }
     RegisterAction<cached_t, bit<32>, bit<4>>(cache_dir_state_reg0) cache_state0_set_action = {
         void apply(inout cached_t value, out bit<4> state){
@@ -364,7 +368,7 @@ control Ingress(
         size = 12;
         default_action = no_state_op();
     }
-    //数据重新过一遍ingress，不清楚咋写
+    //数据重新过一遍ingress，设置state
     action cache_recirc(){
         if(hdr.request.requestType == REQUEST_TYPE_FIRST_READ){
             hdr.request.requestType = REQUEST_TYPE_SECOND_READ;
@@ -373,6 +377,7 @@ control Ingress(
             hdr.request.requestType = REQUEST_TYPE_SECOND_WRITE;
         }
         ig_tm_md.bypass_engress = 1w1;
+        ig_tm_md.ucast_egress_port = DISAGG_RECIRC;
     }
     apply{
         if(hdr.request.requestType == REQUEST_TYPE_FIRST_READ || hdr.request.requestType == REQUEST_TYPE_FIRST_WRITE){
@@ -415,7 +420,7 @@ control Ingress(
             }
 
         }
-        if(hdr.request.requestType == REQUEST_TYPE_SECOND_READ || hdr.request.requestType || REQUEST_TYPE_SECOND_WRITE){
+        if(hdr.request.requestType == REQUEST_TYPE_SECOND_READ || hdr.request.requestType == REQUEST_TYPE_SECOND_WRITE){
             set_cache_state();
         }
     }
