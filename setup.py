@@ -135,4 +135,15 @@ cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_INVALID, request
 
 bfrt.complete_operations()
 
-#Final program
+#Final programming
+print("""
+******************* PROGAMMING RESULTS *****************
+""")
+print ("Table cacheStateTranslate0:")
+cacheStateTranslate0.dump(table=True)
+print ("Table cacheStateTranslate1:")
+cacheStateTranslate1.dump(table=True)
+print ("Table cacheStateTranslate2:")
+cacheStateTranslate2.dump(table=True)
+print ("Table cacheStateTranslate3:")
+cacheStateTranslate3.dump(table=True)
