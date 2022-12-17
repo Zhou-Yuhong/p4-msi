@@ -215,34 +215,30 @@ control Ingress(
         hdr.entry3.cur_state = cache_state3_get_action.execute(hdr.request.index);
     }
     RegisterAction<cached_t, bit<32>, bit<4>>(cache_dir_state_reg0) cache_state0_set_action = {
-        void apply(inout cached_t value, out bit<4> state){
+        void apply(inout cached_t value){
             if(hdr.entry0.next_state != STATE_SAME){
                 value.state = (bit<8>)hdr.entry0.next_state;
-                state = value.state[3:0];
             }
         }
     };
     RegisterAction<cached_t, bit<32>, bit<4>>(cache_dir_state_reg1) cache_state1_set_action = {
-        void apply(inout cached_t value, out bit<4> state){
+        void apply(inout cached_t value){
             if(hdr.entry1.next_state != STATE_SAME){
                 value.state = (bit<8>)hdr.entry1.next_state;
-                state = value.state[3:0];
             }
         }
     };
     RegisterAction<cached_t, bit<32>, bit<4>>(cache_dir_state_reg2) cache_state2_set_action = {
-        void apply(inout cached_t value, out bit<4> state){
+        void apply(inout cached_t value){
             if(hdr.entry2.next_state != STATE_SAME){
                 value.state = (bit<8>)hdr.entry2.next_state;
-                state = value.state[3:0];
             }
         }
     };
     RegisterAction<cached_t, bit<32>, bit<4>>(cache_dir_state_reg3) cache_state3_set_action = {
-        void apply(inout cached_t value, out bit<4> state){
+        void apply(inout cached_t value){
             if(hdr.entry3.next_state != STATE_SAME){
-            value.state = (bit<8>)hdr.entry3.next_state;
-            state = value.state[3:0];                
+            value.state = (bit<8>)hdr.entry3.next_state;              
             }
         }
     };    
@@ -399,8 +395,7 @@ control Ingress(
                     cacheStateTranslate2.apply();
                     cacheStateTranslate3.apply();
                 }
-            }
-            if(hdr.request.node_id == NODE_ID1){
+            }else if(hdr.request.node_id == NODE_ID1){
                 hdr.entry1.requestType = hdr.request.requestType;
                 cacheStateTranslate1.apply();
                 if(hdr.request.miss_type != MISS_TYPE_NOT_MISS){
@@ -408,8 +403,7 @@ control Ingress(
                     cacheStateTranslate2.apply();
                     cacheStateTranslate3.apply();
                 }
-            }
-            if(hdr.request.node_id == NODE_ID2){
+            }else if(hdr.request.node_id == NODE_ID2){
                 hdr.entry2.requestType = hdr.request.requestType;
                 cacheStateTranslate2.apply();
                 if(hdr.request.miss_type != MISS_TYPE_NOT_MISS){
@@ -417,8 +411,7 @@ control Ingress(
                     cacheStateTranslate1.apply();
                     cacheStateTranslate3.apply();
                 }
-            }
-            if(hdr.request.node_id == NODE_ID3){
+            }else if(hdr.request.node_id == NODE_ID3){
                 hdr.entry3.requestType = hdr.request.requestType;
                 cacheStateTranslate3.apply();
                 if(hdr.request.miss_type != MISS_TYPE_NOT_MISS){
