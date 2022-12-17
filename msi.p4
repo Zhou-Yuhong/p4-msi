@@ -24,6 +24,7 @@ const bit<4> REQUEST_TYPE_SET_STATE = 0x3;
 // const bit<4> REQUEST_TYPE_SECOND_WRITE = 0x3;
 const bit<4> REMOTE_READ_MISS = 0x4;
 const bit<4> REMOTE_WRITE_MISS = 0x5;
+const bit<4> REQUEST_TYPE_DO_NOTHING = 0x6;
 //state类型
 const bit<4> STATE_MODIFY = 0x1;
 //开始时都是SHARED的state
@@ -387,38 +388,53 @@ control Ingress(
         if(hdr.request.requestType == REQUEST_TYPE_SET_STATE){
             set_cache_state();
         }else if(hdr.request.requestType == REQUEST_TYPE_GET_OTHER_STATE){
-            if(hdr.request.node_id == NODE_ID0){
-                cacheStateTranslate1.apply();
-                cacheStateTranslate2.apply();
-                cacheStateTranslate3.apply();
-            }else if(hdr.request.node_id == NODE_ID1){
-                cacheStateTranslate0.apply();
-                cacheStateTranslate2.apply();
-                cacheStateTranslate3.apply();
-            }else if(hdr.request.node_id == NODE_ID2){
-                cacheStateTranslate0.apply();
-                cacheStateTranslate1.apply();
-                cacheStateTranslate3.apply();
-            }else if(hdr.request.node_id == NODE_ID3){
-                cacheStateTranslate0.apply();
-                cacheStateTranslate1.apply();
-                cacheStateTranslate2.apply();
-            }
+            cacheStateTranslate0.apply();
+            cacheStateTranslate1.apply();
+            cacheStateTranslate2.apply();
+            cacheStateTranslate3.apply();       
             cache_recirc_set_state();
         }else if(hdr.request.requestType == REQUEST_TYPE_READ || hdr.request.requestType == REQUEST_TYPE_WRITE){
             get_current_cache_state();
             if(hdr.request.node_id == NODE_ID0){
                 hdr.entry0.requestType = hdr.request.requestType;
+                hdr.entry1.requestType = REQUEST_TYPE_DO_NOTHING;
+                hdr.entry2.requestType = REQUEST_TYPE_DO_NOTHING;
+                hdr.entry3.requestType = REQUEST_TYPE_DO_NOTHING;
                 cacheStateTranslate0.apply();
+                cacheStateTranslate1.apply();
+                cacheStateTranslate2.apply();
+                cacheStateTranslate3.apply(); 
+                hdr.entry0.requestType = REQUEST_TYPE_DO_NOTHING;
             }else if(hdr.request.node_id == NODE_ID1){
                 hdr.entry1.requestType = hdr.request.requestType;
+                hdr.entry0.requestType = REQUEST_TYPE_DO_NOTHING;
+                hdr.entry2.requestType = REQUEST_TYPE_DO_NOTHING;
+                hdr.entry3.requestType = REQUEST_TYPE_DO_NOTHING;
+                cacheStateTranslate0.apply();
                 cacheStateTranslate1.apply();
+                cacheStateTranslate2.apply();
+                cacheStateTranslate3.apply(); 
+                hdr.entry1.requestType = REQUEST_TYPE_DO_NOTHING;
             }else if(hdr.request.node_id == NODE_ID2){
                 hdr.entry2.requestType = hdr.request.requestType;
+                hdr.entry0.requestType = REQUEST_TYPE_DO_NOTHING;
+                hdr.entry1.requestType = REQUEST_TYPE_DO_NOTHING;
+                hdr.entry3.requestType = REQUEST_TYPE_DO_NOTHING;
+                cacheStateTranslate0.apply();
+                cacheStateTranslate1.apply();
                 cacheStateTranslate2.apply();
+                cacheStateTranslate3.apply(); ;
+                hdr.entry2.requestType = REQUEST_TYPE_DO_NOTHING;
             }else if(hdr.request.node_id == NODE_ID3){
                 hdr.entry3.requestType = hdr.request.requestType;
-                cacheStateTranslate3.apply();
+                hdr.entry0.requestType = REQUEST_TYPE_DO_NOTHING;
+                hdr.entry1.requestType = REQUEST_TYPE_DO_NOTHING;
+                hdr.entry2.requestType = REQUEST_TYPE_DO_NOTHING;
+                cacheStateTranslate0.apply();
+                cacheStateTranslate1.apply();
+                cacheStateTranslate2.apply();
+                cacheStateTranslate3.apply(); 
+                hdr.entry3.requestType = REQUEST_TYPE_DO_NOTHING;
             }
             if(hdr.request.miss_type != MISS_TYPE_NOT_MISS){
                 cache_recirc_get_other_state();
