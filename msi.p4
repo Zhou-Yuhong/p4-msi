@@ -33,10 +33,10 @@ const bit<4> MISS_TYPE_NOT_MISS = 0x0;
 const bit<4> MISS_TYPE_READ_MISS = 0x1;
 const bit<4> MISS_TYPE_WRITE_MISS = 0x2;
 //node_id， 模拟4个node,分别为第一位为1，第二位为1，第三位为1，第四位为1
-const bit<4> NODE_ID_0 = 0x1;
-const bit<4> NODE_ID_1 = 0x2;
-const bit<4> NODE_ID_2 = 0x4;
-const bit<4> NODE_ID_3 = 0x8;
+const bit<4> NODE_ID0 = 0x1;
+const bit<4> NODE_ID1 = 0x2;
+const bit<4> NODE_ID2 = 0x4;
+const bit<4> NODE_ID3 = 0x8;
 /*************************************************************************
  ***********************  H E A D E R S  *********************************
  *************************************************************************/
@@ -61,26 +61,31 @@ header request_h{
     //表示第一次过的读|第一次过的写|第二次过的读|第二次过的写
     bit<4>  requestType;     
     bit<4>  miss_type;
+    bit<4>  padding;
 }
 header state_entry_h0{
     bit<4> requestType;   
     bit<4> cur_state;
     bit<4> next_state;
+    bit<4> padding;
 }
 header state_entry_h1{
     bit<4> requestType;
     bit<4> cur_state;
     bit<4> next_state;
+    bit<4> padding;
 }
 header state_entry_h2{
     bit<4> requestType;
     bit<4> cur_state;
     bit<4> next_state;
+    bit<4> padding;
 }
 header state_entry_h3{
     bit<4> requestType;
     bit<4> cur_state;
     bit<4> next_state;
+    bit<4> padding;
 }
 
 header ipv4_h {
@@ -242,10 +247,10 @@ control Ingress(
         }
     };    
     action set_cache_state(){
-        cache_state0_set_action();
-        cache_state1_set_action();
-        cache_state2_set_action();
-        cache_state3_set_action();
+        cache_state0_set_action.execute(hdr.request.index);
+        cache_state1_set_action.execute(hdr.request.index);
+        cache_state2_set_action.execute(hdr.request.index);
+        cache_state3_set_action.execute(hdr.request.index);
     }
     action no_state_op(){}
     action get_next_state0(bit<4>next_state, bit<4>miss_type){
@@ -377,7 +382,7 @@ control Ingress(
         if(hdr.request.requestType == REQUEST_TYPE_FIRST_WRITE){
             hdr.request.requestType = REQUEST_TYPE_SECOND_WRITE;
         }
-        ig_tm_md.bypass_engress = 1w1;
+        ig_tm_md.bypass_egress = 1w1;
         ig_tm_md.ucast_egress_port = DISAGG_RECIRC;
     }
     apply{
