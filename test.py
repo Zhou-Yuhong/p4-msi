@@ -3,10 +3,8 @@ import threading
 import sys
 from scapy.all import *
 # global variable
-REQUEST_TYPE_FIRST_READ = 0
-REQUEST_TYPE_FIRST_WRITE = 1 
-REQUEST_TYPE_SECOND_READ = 2 
-REQUEST_TYPE_SECOND_WRITE = 3
+REQUEST_TYPE_READ = 0
+REQUEST_TYPE_WRITE = 1 
 NODE_ID_0 = 1
 NODE_ID_1 = 2
 NODE_ID_2 = 4
@@ -72,9 +70,9 @@ class StateEntryHeader3(Packet):
 
 def translate(option):
     if option == "R":
-        return 0
+        return REQUEST_TYPE_READ
     if option == "W":
-        return 1           
+        return REQUEST_TYPE_WRITE           
 class Client0(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)

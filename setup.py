@@ -6,10 +6,8 @@ STATE_SHARED = 0
 STATE_MODIFY = 1 
 STATE_SAME = 2 
 STATE_INVALID = 3
-REQUEST_TYPE_FIRST_READ = 0
-REQUEST_TYPE_FIRST_WRITE = 1 
-REQUEST_TYPE_SECOND_READ = 2 
-REQUEST_TYPE_SECOND_WRITE = 3 
+REQUEST_TYPE_READ = 0
+REQUEST_TYPE_WRITE = 1 
 REMOTE_READ_MISS = 4 
 REMOTE_WRITE_MISS = 5
 MISS_TYPE_NOT_MISS = 0
@@ -72,64 +70,60 @@ def clear_all(verbose=True, batching=True):
             _clear(table, verbose=verbose, batching=batching)
     
 #clear_all()
-#STATE_SHARED = 0 STATE_MODIFY = 1 STATE_SAME = 2 STATE_INVALID = 3
-#REQUEST_TYPE_FIRST_READ = 0 REQUEST_TYPE_FIRST_WRITE = 1 REQUEST_TYPE_SECOND_READ = 2 
-#REQUEST_TYPE_SECOND_WRITE = 3 REMOTE_READ_MISS = 4 REMOTE_WRITE_MISS = 5
-#MISS_TYPE_NOT_MISS = 0
 #fill table
 cacheStateTranslate0 = p4.Ingress.cacheStateTranslate0
-cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_SHARED, requestType = REQUEST_TYPE_FIRST_READ, next_state = STATE_SHARED, miss_type = MISS_TYPE_NOT_MISS)
-cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_SHARED, requestType = REQUEST_TYPE_FIRST_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_WRITE_MISS)
+cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_SHARED, requestType = REQUEST_TYPE_READ, next_state = STATE_SHARED, miss_type = MISS_TYPE_NOT_MISS)
+cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_SHARED, requestType = REQUEST_TYPE_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_WRITE_MISS)
 cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_SHARED, requestType = REMOTE_READ_MISS, next_state = STATE_SHARED, miss_type = MISS_TYPE_NOT_MISS)
 cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_SHARED, requestType = REMOTE_WRITE_MISS, next_state = STATE_INVALID, miss_type = MISS_TYPE_NOT_MISS)
-cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_MODIFY, requestType = REQUEST_TYPE_FIRST_READ, next_state = STATE_MODIFY, miss_type = MISS_TYPE_NOT_MISS)
-cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_MODIFY, requestType = REQUEST_TYPE_FIRST_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_NOT_MISS)
+cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_MODIFY, requestType = REQUEST_TYPE_READ, next_state = STATE_MODIFY, miss_type = MISS_TYPE_NOT_MISS)
+cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_MODIFY, requestType = REQUEST_TYPE_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_NOT_MISS)
 cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_MODIFY, requestType = REMOTE_READ_MISS, next_state = STATE_SHARED, miss_type = MISS_TYPE_NOT_MISS)
 cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_MODIFY, requestType = REMOTE_WRITE_MISS, next_state = STATE_INVALID, miss_type = MISS_TYPE_NOT_MISS)
-cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_INVALID, requestType = REQUEST_TYPE_FIRST_READ, next_state = STATE_SHARED, miss_type = MISS_TYPE_READ_MISS)
-cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_INVALID, requestType = REQUEST_TYPE_FIRST_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_WRITE_MISS)
+cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_INVALID, requestType = REQUEST_TYPE_READ, next_state = STATE_SHARED, miss_type = MISS_TYPE_READ_MISS)
+cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_INVALID, requestType = REQUEST_TYPE_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_WRITE_MISS)
 cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_INVALID, requestType = REMOTE_READ_MISS, next_state = STATE_INVALID, miss_type = MISS_TYPE_NOT_MISS)
 cacheStateTranslate0.add_with_get_next_state0(cur_state = STATE_INVALID, requestType = REMOTE_WRITE_MISS, next_state = STATE_INVALID, miss_type = MISS_TYPE_NOT_MISS)
 
 cacheStateTranslate1 = p4.Ingress.cacheStateTranslate1
-cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_SHARED, requestType = REQUEST_TYPE_FIRST_READ, next_state = STATE_SHARED, miss_type = MISS_TYPE_NOT_MISS)
-cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_SHARED, requestType = REQUEST_TYPE_FIRST_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_WRITE_MISS)
+cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_SHARED, requestType = REQUEST_TYPE_READ, next_state = STATE_SHARED, miss_type = MISS_TYPE_NOT_MISS)
+cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_SHARED, requestType = REQUEST_TYPE_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_WRITE_MISS)
 cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_SHARED, requestType = REMOTE_READ_MISS, next_state = STATE_SHARED, miss_type = MISS_TYPE_NOT_MISS)
 cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_SHARED, requestType = REMOTE_WRITE_MISS, next_state = STATE_INVALID, miss_type = MISS_TYPE_NOT_MISS)
-cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_MODIFY, requestType = REQUEST_TYPE_FIRST_READ, next_state = STATE_MODIFY, miss_type = MISS_TYPE_NOT_MISS)
-cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_MODIFY, requestType = REQUEST_TYPE_FIRST_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_NOT_MISS)
+cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_MODIFY, requestType = REQUEST_TYPE_READ, next_state = STATE_MODIFY, miss_type = MISS_TYPE_NOT_MISS)
+cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_MODIFY, requestType = REQUEST_TYPE_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_NOT_MISS)
 cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_MODIFY, requestType = REMOTE_READ_MISS, next_state = STATE_SHARED, miss_type = MISS_TYPE_NOT_MISS)
 cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_MODIFY, requestType = REMOTE_WRITE_MISS, next_state = STATE_INVALID, miss_type = MISS_TYPE_NOT_MISS)
-cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_INVALID, requestType = REQUEST_TYPE_FIRST_READ, next_state = STATE_SHARED, miss_type = MISS_TYPE_READ_MISS)
-cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_INVALID, requestType = REQUEST_TYPE_FIRST_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_WRITE_MISS)
+cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_INVALID, requestType = REQUEST_TYPE_READ, next_state = STATE_SHARED, miss_type = MISS_TYPE_READ_MISS)
+cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_INVALID, requestType = REQUEST_TYPE_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_WRITE_MISS)
 cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_INVALID, requestType = REMOTE_READ_MISS, next_state = STATE_INVALID, miss_type = MISS_TYPE_NOT_MISS)
 cacheStateTranslate1.add_with_get_next_state1(cur_state = STATE_INVALID, requestType = REMOTE_WRITE_MISS, next_state = STATE_INVALID, miss_type = MISS_TYPE_NOT_MISS)
 
 cacheStateTranslate2 = p4.Ingress.cacheStateTranslate2
-cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_SHARED, requestType = REQUEST_TYPE_FIRST_READ, next_state = STATE_SHARED, miss_type = MISS_TYPE_NOT_MISS)
-cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_SHARED, requestType = REQUEST_TYPE_FIRST_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_WRITE_MISS)
+cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_SHARED, requestType = REQUEST_TYPE_READ, next_state = STATE_SHARED, miss_type = MISS_TYPE_NOT_MISS)
+cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_SHARED, requestType = REQUEST_TYPE_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_WRITE_MISS)
 cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_SHARED, requestType = REMOTE_READ_MISS, next_state = STATE_SHARED, miss_type = MISS_TYPE_NOT_MISS)
 cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_SHARED, requestType = REMOTE_WRITE_MISS, next_state = STATE_INVALID, miss_type = MISS_TYPE_NOT_MISS)
-cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_MODIFY, requestType = REQUEST_TYPE_FIRST_READ, next_state = STATE_MODIFY, miss_type = MISS_TYPE_NOT_MISS)
-cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_MODIFY, requestType = REQUEST_TYPE_FIRST_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_NOT_MISS)
+cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_MODIFY, requestType = REQUEST_TYPE_READ, next_state = STATE_MODIFY, miss_type = MISS_TYPE_NOT_MISS)
+cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_MODIFY, requestType = REQUEST_TYPE_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_NOT_MISS)
 cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_MODIFY, requestType = REMOTE_READ_MISS, next_state = STATE_SHARED, miss_type = MISS_TYPE_NOT_MISS)
 cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_MODIFY, requestType = REMOTE_WRITE_MISS, next_state = STATE_INVALID, miss_type = MISS_TYPE_NOT_MISS)
-cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_INVALID, requestType = REQUEST_TYPE_FIRST_READ, next_state = STATE_SHARED, miss_type = MISS_TYPE_READ_MISS)
-cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_INVALID, requestType = REQUEST_TYPE_FIRST_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_WRITE_MISS)
+cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_INVALID, requestType = REQUEST_TYPE_READ, next_state = STATE_SHARED, miss_type = MISS_TYPE_READ_MISS)
+cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_INVALID, requestType = REQUEST_TYPE_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_WRITE_MISS)
 cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_INVALID, requestType = REMOTE_READ_MISS, next_state = STATE_INVALID, miss_type = MISS_TYPE_NOT_MISS)
 cacheStateTranslate2.add_with_get_next_state2(cur_state = STATE_INVALID, requestType = REMOTE_WRITE_MISS, next_state = STATE_INVALID, miss_type = MISS_TYPE_NOT_MISS)
 
 cacheStateTranslate3 = p4.Ingress.cacheStateTranslate3
-cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_SHARED, requestType = REQUEST_TYPE_FIRST_READ, next_state = STATE_SHARED, miss_type = MISS_TYPE_NOT_MISS)
-cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_SHARED, requestType = REQUEST_TYPE_FIRST_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_WRITE_MISS)
+cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_SHARED, requestType = REQUEST_TYPE_READ, next_state = STATE_SHARED, miss_type = MISS_TYPE_NOT_MISS)
+cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_SHARED, requestType = REQUEST_TYPE_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_WRITE_MISS)
 cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_SHARED, requestType = REMOTE_READ_MISS, next_state = STATE_SHARED, miss_type = MISS_TYPE_NOT_MISS)
 cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_SHARED, requestType = REMOTE_WRITE_MISS, next_state = STATE_INVALID, miss_type = MISS_TYPE_NOT_MISS)
-cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_MODIFY, requestType = REQUEST_TYPE_FIRST_READ, next_state = STATE_MODIFY, miss_type = MISS_TYPE_NOT_MISS)
-cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_MODIFY, requestType = REQUEST_TYPE_FIRST_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_NOT_MISS)
+cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_MODIFY, requestType = REQUEST_TYPE_READ, next_state = STATE_MODIFY, miss_type = MISS_TYPE_NOT_MISS)
+cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_MODIFY, requestType = REQUEST_TYPE_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_NOT_MISS)
 cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_MODIFY, requestType = REMOTE_READ_MISS, next_state = STATE_SHARED, miss_type = MISS_TYPE_NOT_MISS)
 cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_MODIFY, requestType = REMOTE_WRITE_MISS, next_state = STATE_INVALID, miss_type = MISS_TYPE_NOT_MISS)
-cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_INVALID, requestType = REQUEST_TYPE_FIRST_READ, next_state = STATE_SHARED, miss_type = MISS_TYPE_READ_MISS)
-cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_INVALID, requestType = REQUEST_TYPE_FIRST_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_WRITE_MISS)
+cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_INVALID, requestType = REQUEST_TYPE_READ, next_state = STATE_SHARED, miss_type = MISS_TYPE_READ_MISS)
+cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_INVALID, requestType = REQUEST_TYPE_WRITE, next_state = STATE_MODIFY, miss_type = MISS_TYPE_WRITE_MISS)
 cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_INVALID, requestType = REMOTE_READ_MISS, next_state = STATE_INVALID, miss_type = MISS_TYPE_NOT_MISS)
 cacheStateTranslate3.add_with_get_next_state3(cur_state = STATE_INVALID, requestType = REMOTE_WRITE_MISS, next_state = STATE_INVALID, miss_type = MISS_TYPE_NOT_MISS)
 
