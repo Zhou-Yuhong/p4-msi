@@ -387,52 +387,59 @@ control Ingress(
     apply{
         if(hdr.request.requestType == REQUEST_TYPE_SET_STATE){
             set_cache_state();
-        }else{
-            if(hdr.request.requestType == REQUEST_TYPE_READ || hdr.request.requestType == REQUEST_TYPE_WRITE){
-                get_current_cache_state();
-                if(hdr.request.node_id == NODE_ID0){
-                    hdr.entry0.requestType = hdr.request.requestType;
-                    hdr.entry1.requestType = REQUEST_TYPE_DO_NOTHING;
-                    hdr.entry2.requestType = REQUEST_TYPE_DO_NOTHING;
-                    hdr.entry3.requestType = REQUEST_TYPE_DO_NOTHING;
-                }else if(hdr.request.node_id == NODE_ID1){
-                    hdr.entry1.requestType = hdr.request.requestType;
-                    hdr.entry0.requestType = REQUEST_TYPE_DO_NOTHING;
-                    hdr.entry2.requestType = REQUEST_TYPE_DO_NOTHING;
-                    hdr.entry3.requestType = REQUEST_TYPE_DO_NOTHING;
-                }else if(hdr.request.node_id == NODE_ID2){
-                    hdr.entry2.requestType = hdr.request.requestType;
-                    hdr.entry0.requestType = REQUEST_TYPE_DO_NOTHING;
-                    hdr.entry1.requestType = REQUEST_TYPE_DO_NOTHING;
-                    hdr.entry3.requestType = REQUEST_TYPE_DO_NOTHING;
-                }else if(hdr.request.node_id == NODE_ID3){
-                    hdr.entry3.requestType = hdr.request.requestType;
-                    hdr.entry0.requestType = REQUEST_TYPE_DO_NOTHING;
-                    hdr.entry1.requestType = REQUEST_TYPE_DO_NOTHING;
-                    hdr.entry2.requestType = REQUEST_TYPE_DO_NOTHING;
-                } 
-            }
+        }else if(hdr.request.requestType == REQUEST_TYPE_GET_OTHER_STATE){
             cacheStateTranslate0.apply();
             cacheStateTranslate1.apply();
             cacheStateTranslate2.apply();
-            cacheStateTranslate3.apply();
-            if(hdr.request.requestType == REQUEST_TYPE_GET_OTHER_STATE){
+            cacheStateTranslate3.apply();       
+            cache_recirc_set_state();
+        }else if(hdr.request.requestType == REQUEST_TYPE_READ || hdr.request.requestType == REQUEST_TYPE_WRITE){
+            get_current_cache_state();
+            if(hdr.request.node_id == NODE_ID0){
+                hdr.entry0.requestType = hdr.request.requestType;
+                hdr.entry1.requestType = REQUEST_TYPE_DO_NOTHING;
+                hdr.entry2.requestType = REQUEST_TYPE_DO_NOTHING;
+                hdr.entry3.requestType = REQUEST_TYPE_DO_NOTHING;
+                cacheStateTranslate0.apply();
+                cacheStateTranslate1.apply();
+                cacheStateTranslate2.apply();
+                cacheStateTranslate3.apply(); 
+                hdr.entry0.requestType = REQUEST_TYPE_DO_NOTHING;
+            }else if(hdr.request.node_id == NODE_ID1){
+                hdr.entry1.requestType = hdr.request.requestType;
+                hdr.entry0.requestType = REQUEST_TYPE_DO_NOTHING;
+                hdr.entry2.requestType = REQUEST_TYPE_DO_NOTHING;
+                hdr.entry3.requestType = REQUEST_TYPE_DO_NOTHING;
+                cacheStateTranslate0.apply();
+                cacheStateTranslate1.apply();
+                cacheStateTranslate2.apply();
+                cacheStateTranslate3.apply(); 
+                hdr.entry1.requestType = REQUEST_TYPE_DO_NOTHING;
+            }else if(hdr.request.node_id == NODE_ID2){
+                hdr.entry2.requestType = hdr.request.requestType;
+                hdr.entry0.requestType = REQUEST_TYPE_DO_NOTHING;
+                hdr.entry1.requestType = REQUEST_TYPE_DO_NOTHING;
+                hdr.entry3.requestType = REQUEST_TYPE_DO_NOTHING;
+                cacheStateTranslate0.apply();
+                cacheStateTranslate1.apply();
+                cacheStateTranslate2.apply();
+                cacheStateTranslate3.apply(); ;
+                hdr.entry2.requestType = REQUEST_TYPE_DO_NOTHING;
+            }else if(hdr.request.node_id == NODE_ID3){
+                hdr.entry3.requestType = hdr.request.requestType;
+                hdr.entry0.requestType = REQUEST_TYPE_DO_NOTHING;
+                hdr.entry1.requestType = REQUEST_TYPE_DO_NOTHING;
+                hdr.entry2.requestType = REQUEST_TYPE_DO_NOTHING;
+                cacheStateTranslate0.apply();
+                cacheStateTranslate1.apply();
+                cacheStateTranslate2.apply();
+                cacheStateTranslate3.apply(); 
+                hdr.entry3.requestType = REQUEST_TYPE_DO_NOTHING;
+            }
+            if(hdr.request.miss_type != MISS_TYPE_NOT_MISS){
+                cache_recirc_get_other_state();
+            }else{
                 cache_recirc_set_state();
-            }else if(hdr.request.requestType == REQUEST_TYPE_READ || hdr.request.requestType == REQUEST_TYPE_WRITE){
-                if(hdr.request.node_id == NODE_ID0){
-                    hdr.entry0.requestType = REQUEST_TYPE_DO_NOTHING;
-                }else if(hdr.request.node_id == NODE_ID1){
-                    hdr.entry1.requestType = REQUEST_TYPE_DO_NOTHING;
-                }else if(hdr.request.node_id == NODE_ID2){
-                    hdr.entry2.requestType = REQUEST_TYPE_DO_NOTHING;
-                }else if(hdr.request.node_id == NODE_ID3){
-                    hdr.entry3.requestType = REQUEST_TYPE_DO_NOTHING;
-                } 
-                if(hdr.request.miss_type != MISS_TYPE_NOT_MISS){
-                    cache_recirc_get_other_state();
-                }else{
-                    cache_recirc_set_state();
-                }                
             }
         }
     }
