@@ -70,25 +70,25 @@ header state_entry_h0{
     bit<4> requestType;   
     bit<4> cur_state;
     bit<4> next_state;
-    bit<4> padding;
+    bit<4> miss_type;
 }
 header state_entry_h1{
     bit<4> requestType;
     bit<4> cur_state;
     bit<4> next_state;
-    bit<4> padding;
+    bit<4> miss_type;
 }
 header state_entry_h2{
     bit<4> requestType;
     bit<4> cur_state;
     bit<4> next_state;
-    bit<4> padding;
+    bit<4> miss_type;
 }
 header state_entry_h3{
     bit<4> requestType;
     bit<4> cur_state;
     bit<4> next_state;
-    bit<4> padding;
+    bit<4> miss_type;
 }
 
 header ipv4_h {
@@ -254,75 +254,79 @@ control Ingress(
     action no_state_op(){}
     action get_next_state0(bit<4>next_state, bit<4>miss_type){
         hdr.entry0.next_state = next_state;
-        if(miss_type == MISS_TYPE_READ_MISS){
-            hdr.entry1.requestType = REMOTE_READ_MISS;
-            hdr.entry2.requestType = REMOTE_READ_MISS;
-            hdr.entry3.requestType = REMOTE_READ_MISS;
-        }
-        if(miss_type == MISS_TYPE_WRITE_MISS){
-            hdr.entry1.requestType = REMOTE_WRITE_MISS;
-            hdr.entry2.requestType = REMOTE_WRITE_MISS;
-            hdr.entry3.requestType = REMOTE_WRITE_MISS;
-        }
-        if(miss_type == MISS_TYPE_NOT_MISS){
-            hdr.entry1.next_state = STATE_SAME;
-            hdr.entry2.next_state = STATE_SAME;
-            hdr.entry3.next_state = STATE_SAME;
-        }
+        hdr.entry0.miss_type = miss_type;
+        // if(miss_type == MISS_TYPE_READ_MISS){
+        //     hdr.entry1.requestType = REMOTE_READ_MISS;
+        //     hdr.entry2.requestType = REMOTE_READ_MISS;
+        //     hdr.entry3.requestType = REMOTE_READ_MISS;
+        // }
+        // if(miss_type == MISS_TYPE_WRITE_MISS){
+        //     hdr.entry1.requestType = REMOTE_WRITE_MISS;
+        //     hdr.entry2.requestType = REMOTE_WRITE_MISS;
+        //     hdr.entry3.requestType = REMOTE_WRITE_MISS;
+        // }
+        // if(miss_type == MISS_TYPE_NOT_MISS){
+        //     hdr.entry1.next_state = STATE_SAME;
+        //     hdr.entry2.next_state = STATE_SAME;
+        //     hdr.entry3.next_state = STATE_SAME;
+        // }
     }
     action get_next_state1(bit<4>next_state, bit<4>miss_type){
         hdr.entry1.next_state = next_state;
-        if(miss_type == MISS_TYPE_READ_MISS){
-            hdr.entry0.requestType = REMOTE_READ_MISS;
-            hdr.entry2.requestType = REMOTE_READ_MISS;
-            hdr.entry3.requestType = REMOTE_READ_MISS;
-        }
-        if(miss_type == MISS_TYPE_WRITE_MISS){
-            hdr.entry0.requestType = REMOTE_WRITE_MISS;
-            hdr.entry2.requestType = REMOTE_WRITE_MISS;
-            hdr.entry3.requestType = REMOTE_WRITE_MISS;
-        }
-        if(miss_type == MISS_TYPE_NOT_MISS){
-            hdr.entry0.next_state = STATE_SAME;
-            hdr.entry2.next_state = STATE_SAME;
-            hdr.entry3.next_state = STATE_SAME;
-        }        
+        hdr.entry1.miss_type = miss_type;
+        // if(miss_type == MISS_TYPE_READ_MISS){
+        //     hdr.entry0.requestType = REMOTE_READ_MISS;
+        //     hdr.entry2.requestType = REMOTE_READ_MISS;
+        //     hdr.entry3.requestType = REMOTE_READ_MISS;
+        // }
+        // if(miss_type == MISS_TYPE_WRITE_MISS){
+        //     hdr.entry0.requestType = REMOTE_WRITE_MISS;
+        //     hdr.entry2.requestType = REMOTE_WRITE_MISS;
+        //     hdr.entry3.requestType = REMOTE_WRITE_MISS;
+        // }
+        // if(miss_type == MISS_TYPE_NOT_MISS){
+        //     hdr.entry0.next_state = STATE_SAME;
+        //     hdr.entry2.next_state = STATE_SAME;
+        //     hdr.entry3.next_state = STATE_SAME;
+        // }        
     }
     action get_next_state2(bit<4>next_state, bit<4>miss_type){
         hdr.entry2.next_state = next_state;
-        if(miss_type == MISS_TYPE_READ_MISS){
-            hdr.entry0.requestType = REMOTE_READ_MISS;
-            hdr.entry1.requestType = REMOTE_READ_MISS;
-            hdr.entry3.requestType = REMOTE_READ_MISS;
-        }
-        if(miss_type == MISS_TYPE_WRITE_MISS){
-            hdr.entry0.requestType = REMOTE_WRITE_MISS;
-            hdr.entry1.requestType = REMOTE_WRITE_MISS;
-            hdr.entry3.requestType = REMOTE_WRITE_MISS;
-        }
-        if(miss_type == MISS_TYPE_NOT_MISS){
-            hdr.entry0.next_state = STATE_SAME;
-            hdr.entry1.next_state = STATE_SAME;
-            hdr.entry3.next_state = STATE_SAME;
-        }        
+        hdr.entry2.miss_type = miss_type;
+        // if(miss_type == MISS_TYPE_READ_MISS){
+        //     hdr.entry0.requestType = REMOTE_READ_MISS;
+        //     hdr.entry1.requestType = REMOTE_READ_MISS;
+        //     hdr.entry3.requestType = REMOTE_READ_MISS;
+        // }
+        // if(miss_type == MISS_TYPE_WRITE_MISS){
+        //     hdr.entry0.requestType = REMOTE_WRITE_MISS;
+        //     hdr.entry1.requestType = REMOTE_WRITE_MISS;
+        //     hdr.entry3.requestType = REMOTE_WRITE_MISS;
+        // }
+        // if(miss_type == MISS_TYPE_NOT_MISS){
+        //     hdr.entry0.next_state = STATE_SAME;
+        //     hdr.entry1.next_state = STATE_SAME;
+        //     hdr.entry3.next_state = STATE_SAME;
+        // }        
     }
     action get_next_state3(bit<4>next_state, bit<4>miss_type){
         hdr.entry3.next_state = next_state;
-        if(miss_type == MISS_TYPE_READ_MISS){
-            hdr.entry0.requestType = REMOTE_READ_MISS;
-            hdr.entry1.requestType = REMOTE_READ_MISS;
-            hdr.entry2.requestType = REMOTE_READ_MISS;
-        }
-        if(miss_type == MISS_TYPE_WRITE_MISS){
-            hdr.entry0.requestType = REMOTE_WRITE_MISS;
-            hdr.entry1.requestType = REMOTE_WRITE_MISS;
-            hdr.entry2.requestType = REMOTE_WRITE_MISS;
-        }
-        if(miss_type == MISS_TYPE_NOT_MISS){
-            hdr.entry0.next_state = STATE_SAME;
-            hdr.entry1.next_state = STATE_SAME;
-            hdr.entry2.next_state = STATE_SAME;
-        }        
+        hdr.entry3.miss_type = miss_type;
+        // if(miss_type == MISS_TYPE_READ_MISS){
+        //     hdr.entry0.requestType = REMOTE_READ_MISS;
+        //     hdr.entry1.requestType = REMOTE_READ_MISS;
+        //     hdr.entry2.requestType = REMOTE_READ_MISS;
+        // }
+        // if(miss_type == MISS_TYPE_WRITE_MISS){
+        //     hdr.entry0.requestType = REMOTE_WRITE_MISS;
+        //     hdr.entry1.requestType = REMOTE_WRITE_MISS;
+        //     hdr.entry2.requestType = REMOTE_WRITE_MISS;
+        // }
+        // if(miss_type == MISS_TYPE_NOT_MISS){
+        //     hdr.entry0.next_state = STATE_SAME;
+        //     hdr.entry1.next_state = STATE_SAME;
+        //     hdr.entry2.next_state = STATE_SAME;
+        // }        
     }
     //状态转换表
     table cacheStateTranslate0{
@@ -421,12 +425,76 @@ control Ingress(
             }else if(hdr.request.requestType == REQUEST_TYPE_READ || hdr.request.requestType == REQUEST_TYPE_WRITE){
                 if(hdr.request.node_id == NODE_ID0){
                     hdr.entry0.requestType = REQUEST_TYPE_DO_NOTHING;
+                    hdr.request.miss_type = hdr.entry0.miss_type;
+                    if(hdr.entry0.miss_type == MISS_TYPE_READ_MISS){
+                        hdr.entry1.requestType = REMOTE_READ_MISS;
+                        hdr.entry2.requestType = REMOTE_READ_MISS;
+                        hdr.entry3.requestType = REMOTE_READ_MISS;
+                    }
+                    if(hdr.entry0.miss_type == MISS_TYPE_WRITE_MISS){
+                        hdr.entry1.requestType = REMOTE_WRITE_MISS;
+                        hdr.entry2.requestType = REMOTE_WRITE_MISS;
+                        hdr.entry3.requestType = REMOTE_WRITE_MISS;
+                    }
+                    if(hdr.entry0.miss_type == MISS_TYPE_NOT_MISS){
+                        hdr.entry1.next_state = STATE_SAME;
+                        hdr.entry2.next_state = STATE_SAME;
+                        hdr.entry3.next_state = STATE_SAME;
+                    }
                 }else if(hdr.request.node_id == NODE_ID1){
                     hdr.entry1.requestType = REQUEST_TYPE_DO_NOTHING;
+                    hdr.request.miss_type = hdr.entry1.miss_type;
+                    if(hdr.entry1.miss_type == MISS_TYPE_READ_MISS){
+                        hdr.entry0.requestType = REMOTE_READ_MISS;
+                        hdr.entry2.requestType = REMOTE_READ_MISS;
+                        hdr.entry3.requestType = REMOTE_READ_MISS;
+                    }
+                    if(hdr.entry1.miss_type == MISS_TYPE_WRITE_MISS){
+                        hdr.entry0.requestType = REMOTE_WRITE_MISS;
+                        hdr.entry2.requestType = REMOTE_WRITE_MISS;
+                        hdr.entry3.requestType = REMOTE_WRITE_MISS;
+                    }
+                    if(hdr.entry1.miss_type == MISS_TYPE_NOT_MISS){
+                        hdr.entry0.next_state = STATE_SAME;
+                        hdr.entry2.next_state = STATE_SAME;
+                        hdr.entry3.next_state = STATE_SAME;
+                    }                    
                 }else if(hdr.request.node_id == NODE_ID2){
                     hdr.entry2.requestType = REQUEST_TYPE_DO_NOTHING;
+                    hdr.request.miss_type = hdr.entry2.miss_type;
+                    if(hdr.entry2.miss_type == MISS_TYPE_READ_MISS){
+                        hdr.entry0.requestType = REMOTE_READ_MISS;
+                        hdr.entry1.requestType = REMOTE_READ_MISS;
+                        hdr.entry3.requestType = REMOTE_READ_MISS;
+                    }
+                    if(hdr.entry2.miss_type == MISS_TYPE_WRITE_MISS){
+                        hdr.entry0.requestType = REMOTE_WRITE_MISS;
+                        hdr.entry1.requestType = REMOTE_WRITE_MISS;
+                        hdr.entry3.requestType = REMOTE_WRITE_MISS;
+                    }
+                    if(hdr.entry2.miss_type == MISS_TYPE_NOT_MISS){
+                        hdr.entry0.next_state = STATE_SAME;
+                        hdr.entry1.next_state = STATE_SAME;
+                        hdr.entry3.next_state = STATE_SAME;
+                    }                    
                 }else if(hdr.request.node_id == NODE_ID3){
                     hdr.entry3.requestType = REQUEST_TYPE_DO_NOTHING;
+                    hdr.request.miss_type = hdr.entry3.miss_type;
+                    if(hdr.entry3.miss_type == MISS_TYPE_READ_MISS){
+                        hdr.entry0.requestType = REMOTE_READ_MISS;
+                        hdr.entry1.requestType = REMOTE_READ_MISS;
+                        hdr.entry2.requestType = REMOTE_READ_MISS;
+                    }
+                    if(hdr.entry3.miss_type == MISS_TYPE_WRITE_MISS){
+                        hdr.entry0.requestType = REMOTE_WRITE_MISS;
+                        hdr.entry1.requestType = REMOTE_WRITE_MISS;
+                        hdr.entry2.requestType = REMOTE_WRITE_MISS;
+                    }
+                    if(hdr.entry3.miss_type == MISS_TYPE_NOT_MISS){
+                        hdr.entry0.next_state = STATE_SAME;
+                        hdr.entry1.next_state = STATE_SAME;
+                        hdr.entry2.next_state = STATE_SAME;
+                    }                
                 } 
                 if(hdr.request.miss_type != MISS_TYPE_NOT_MISS){
                     cache_recirc_get_other_state();
