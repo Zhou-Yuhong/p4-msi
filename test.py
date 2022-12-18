@@ -38,7 +38,7 @@ class StateEntryHeader0(Packet):
         BitField("requestType", 0, 4),
         BitField("cur_state", 0, 4) ,
         BitField("next_state", 0, 4),
-        BitField("padding", 0, 4)
+        BitField("miss_type", 0, 4)
     ]   
 
 class StateEntryHeader1(Packet):
@@ -47,7 +47,7 @@ class StateEntryHeader1(Packet):
         BitField("requestType", 0, 4),
         BitField("cur_state", 0, 4) ,
         BitField("next_state", 0, 4),
-        BitField("padding", 0, 4)
+        BitField("miss_type", 0, 4)
     ]
 
 class StateEntryHeader2(Packet):
@@ -56,7 +56,7 @@ class StateEntryHeader2(Packet):
         BitField("requestType", 0, 4),
         BitField("cur_state", 0, 4) ,
         BitField("next_state", 0, 4),
-        BitField("padding", 0, 4)
+        BitField("miss_type", 0, 4)
     ]
 
 class StateEntryHeader3(Packet):
@@ -65,7 +65,7 @@ class StateEntryHeader3(Packet):
         BitField("requestType", 0, 4),
         BitField("cur_state", 0, 4) ,
         BitField("next_state", 0, 4),
-        BitField("padding", 0, 4)
+        BitField("miss_type", 0, 4)
     ]
 
 def translate(option):
