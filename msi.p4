@@ -6,7 +6,7 @@
 /*************************************************************************
  ************* C O N S T A N T S    A N D   T Y P E S  *******************
 *************************************************************************/
-#define MAX_CACHE_DIR_ENTRY 1024
+#define MAX_CACHE_DIR_ENTRY 16
 typedef bit<48> mac_addr_t;
 typedef bit<32> ipv4_addr_t;
 const bit<16> ETHERTYPE_TPID = 0x8100;
@@ -61,7 +61,6 @@ header vlan_tag_h {
 header request_h{
     bit<4> node_id;
     bit<32> index;
-    //表示第一次过的读|第一次过的写|第二次过的读|第二次过的写
     bit<4>  requestType;     
     bit<4>  miss_type;
     bit<4>  padding;
@@ -210,11 +209,17 @@ control Ingress(
             state = value.state[3:0];
         }
     };
-    action get_current_cache_state()
+    action get_current_cache_state0()
     {
         hdr.entry0.cur_state = cache_state0_get_action.execute(hdr.request.index);
+    }
+    action get_current_cache_state1(){
         hdr.entry1.cur_state = cache_state1_get_action.execute(hdr.request.index);
+    }
+    action get_current_cache_state2(){
         hdr.entry2.cur_state = cache_state2_get_action.execute(hdr.request.index);
+    }
+    action get_current_cache_state3(){
         hdr.entry3.cur_state = cache_state3_get_action.execute(hdr.request.index);
     }
     RegisterAction<cached_t, bit<32>, bit<4>>(cache_dir_state_reg0) cache_state0_set_action = {
@@ -245,10 +250,16 @@ control Ingress(
             }
         }
     };    
-    action set_cache_state(){
+    action set_cache_state0(){
         cache_state0_set_action.execute(hdr.request.index);
+    }
+    action set_cache_state1(){
         cache_state1_set_action.execute(hdr.request.index);
+    }
+    action set_cache_state2(){
         cache_state2_set_action.execute(hdr.request.index);
+    }
+    action set_cache_state3(){
         cache_state3_set_action.execute(hdr.request.index);
     }
     action no_state_op(){}
@@ -390,10 +401,16 @@ control Ingress(
     }
     apply{
         if(hdr.request.requestType == REQUEST_TYPE_SET_STATE){
-            set_cache_state();
+            set_cache_state0();
+            set_cache_state1();
+            set_cache_state2();
+            set_cache_state3();
         }else{
             if(hdr.request.requestType == REQUEST_TYPE_READ || hdr.request.requestType == REQUEST_TYPE_WRITE){
-                get_current_cache_state();
+                get_current_cache_state0();
+                get_current_cache_state1();
+                get_current_cache_state2();
+                get_current_cache_state3();
                 if(hdr.request.node_id == NODE_ID0){
                     hdr.entry0.requestType = hdr.request.requestType;
                     hdr.entry1.requestType = REQUEST_TYPE_DO_NOTHING;
