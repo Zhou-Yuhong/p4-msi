@@ -1,7 +1,9 @@
 import time
 import threading
 import sys
+import scapy
 from scapy.all import *
+
 # global variable
 REQUEST_TYPE_READ = 0
 REQUEST_TYPE_WRITE = 1 
