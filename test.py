@@ -27,7 +27,7 @@ class RequestHeader(Packet):
     fields_desc = [
         BitField("node_id", 1, 4),
         BitField("index", 0, 32),
-        BitField("requestType", 0, 4),
+        BitField("request_type", 0, 4),
         BitField("miss_type", 0, 4),
         BitField("padding", 0, 4)
     ]
@@ -35,7 +35,7 @@ class RequestHeader(Packet):
 class StateEntryHeader0(Packet):
     name = "StateEntryHeader0"
     fields_desc = [
-        BitField("requestType", 0, 4),
+        BitField("request_type", 0, 4),
         BitField("cur_state", 0, 4) ,
         BitField("next_state", 0, 4),
         BitField("miss_type", 0, 4)
@@ -44,7 +44,7 @@ class StateEntryHeader0(Packet):
 class StateEntryHeader1(Packet):
     name = "StateEntryHeader1"
     fields_desc = [
-        BitField("requestType", 0, 4),
+        BitField("request_type", 0, 4),
         BitField("cur_state", 0, 4) ,
         BitField("next_state", 0, 4),
         BitField("miss_type", 0, 4)
@@ -53,7 +53,7 @@ class StateEntryHeader1(Packet):
 class StateEntryHeader2(Packet):
     name = "StateEntryHeader2"
     fields_desc = [
-        BitField("requestType", 0, 4),
+        BitField("request_type", 0, 4),
         BitField("cur_state", 0, 4) ,
         BitField("next_state", 0, 4),
         BitField("miss_type", 0, 4)
@@ -62,7 +62,7 @@ class StateEntryHeader2(Packet):
 class StateEntryHeader3(Packet):
     name = "StateEntryHeader3"
     fields_desc = [
-        BitField("requestType", 0, 4),
+        BitField("request_type", 0, 4),
         BitField("cur_state", 0, 4) ,
         BitField("next_state", 0, 4),
         BitField("miss_type", 0, 4)
@@ -82,7 +82,7 @@ class Client0(threading.Thread):
             index = NODE0_INDEXES[i]
             if option == "N":
                 continue
-            packet = Ether(src = ETH_SRC, dst = ETH_DST, type = ETH_TYPE)/RequestHeader(node_id = NODE_ID_0, index = index, requestType = translate(option))/StateEntryHeader0()/StateEntryHeader1()/StateEntryHeader2()/StateEntryHeader3()
+            packet = Ether(src = ETH_SRC, dst = ETH_DST, type = ETH_TYPE)/RequestHeader(node_id = NODE_ID_0, index = index, request_type = translate(option))/StateEntryHeader0()/StateEntryHeader1()/StateEntryHeader2()/StateEntryHeader3()
             sendp(packet, iface = VETH)
             time.sleep(0.1)
 
@@ -95,7 +95,7 @@ class Client1(threading.Thread):
             index = NODE1_INDEXES[i]
             if option == "N":
                 continue
-            packet = Ether(src = ETH_SRC, dst = ETH_DST, type = ETH_TYPE)/RequestHeader(node_id = NODE_ID_1, index = index, requestType = translate(option))/StateEntryHeader0()/StateEntryHeader1()/StateEntryHeader2()/StateEntryHeader3()
+            packet = Ether(src = ETH_SRC, dst = ETH_DST, type = ETH_TYPE)/RequestHeader(node_id = NODE_ID_1, index = index, request_type = translate(option))/StateEntryHeader0()/StateEntryHeader1()/StateEntryHeader2()/StateEntryHeader3()
             sendp(packet, iface = VETH)
             time.sleep(0.1)            
 
@@ -108,7 +108,7 @@ class Client2(threading.Thread):
             index = NODE2_INDEXES[i]
             if option == "N":
                 continue
-            packet = Ether(src = ETH_SRC, dst = ETH_DST, type = ETH_TYPE)/RequestHeader(node_id = NODE_ID_2, index = index, requestType = translate(option))/StateEntryHeader0()/StateEntryHeader1()/StateEntryHeader2()/StateEntryHeader3()
+            packet = Ether(src = ETH_SRC, dst = ETH_DST, type = ETH_TYPE)/RequestHeader(node_id = NODE_ID_2, index = index, request_type = translate(option))/StateEntryHeader0()/StateEntryHeader1()/StateEntryHeader2()/StateEntryHeader3()
             sendp(packet, iface = VETH)
             time.sleep(0.1)
 
@@ -121,7 +121,7 @@ class Client3(threading.Thread):
             index = NODE3_INDEXES[i]
             if option == "N":
                 continue
-            packet = Ether(src = ETH_SRC, dst = ETH_DST, type = ETH_TYPE)/RequestHeader(node_id = NODE_ID_3, index = index, requestType = translate(option))/StateEntryHeader0()/StateEntryHeader1()/StateEntryHeader2()/StateEntryHeader3()
+            packet = Ether(src = ETH_SRC, dst = ETH_DST, type = ETH_TYPE)/RequestHeader(node_id = NODE_ID_3, index = index, request_type = translate(option))/StateEntryHeader0()/StateEntryHeader1()/StateEntryHeader2()/StateEntryHeader3()
             sendp(packet, iface = VETH)
             time.sleep(0.1)        
 
